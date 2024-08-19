@@ -2,8 +2,11 @@ import weatherIconMapping from '../../utils/weatherIconMap';
 import WeatherCardLayout from '../CardLayout';
 import { useSelector } from 'react-redux';
 import { units } from '../../utils/units';
-const WeeklyForecast=({weatherData})=> {
+import useWeatherData from '../../hooks/useWeatherData';
+const WeeklyForecast=()=> {
+  const {weatherData,error,isLoading}=useWeatherData();
   const unitsType=useSelector((store)=>store.units);
+  if(!weatherData||!weatherData.daily||isLoading||error)return null;
   const forecast = weatherData.daily.slice(0, 7).map(day => {
     const {date,day:dayName}=day.dt;
     const weatherCode = day.weather[0]?.icon;

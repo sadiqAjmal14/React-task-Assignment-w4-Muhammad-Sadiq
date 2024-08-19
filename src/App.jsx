@@ -4,27 +4,25 @@ import CurrentWeatherCard from './components/CurrWeatherCard';
 import LocationCard from './components/CityCard';
 import HourlyWeatherChart from './components/HourlyChart';
 import WeeklyForecast from './components/WeeklyForecast';
-import useWeatherData from './hooks/useWeatherData';
-import LoadingModal from './components/LoadingPage';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleUnitType } from './Redux/slices/UnitsSlice';
 
 function App() {
-  const { searchQuery, weatherData, error, isLoading } = useWeatherData();
+  
   const unit = useSelector((store) => store.units);
   const dispatch = useDispatch();
   const toggleUnit = () => {
     dispatch(toggleUnitType());
   };
-
+  const searchQuery = useSelector((store) => store.search);
   return (
-      isLoading? <LoadingModal />:error?<p>Error Fetching data</p>:
-      <div className="min-h-screen bg-dark-bg text-white p-4 relative">
-        <div className="container mx-auto px-4">
-          <h2 className="text-4xl md:text-6xl mb-6 font-extrabold text-blue-600 animate-pulse text-center">
-            OPEN WEATHER
-          </h2>
-          <SearchBar />
+    <div className="min-h-screen bg-dark-bg text-white p-4 relative">
+      <div className="container mx-auto">
+        <h2 className="text-4xl md:text-6xl mb-6 font-extrabold text-blue-600 animate-pulse text-center">
+          OPEN WEATHER
+        </h2>
+        <SearchBar />
+        {(searchQuery.length > 0) && (
           <div className="flex items-center justify-end space-x-4 p-4">
             <h2 className="text-lg bg-gradient-to-r from-gradient-start to-gradient-end bg-clip-text text-transparent">°C</h2>
             <button
@@ -40,22 +38,17 @@ function App() {
             </button>
             <h2 className="text-lg bg-gradient-to-r from-gradient-start to-gradient-end bg-clip-text text-transparent">°F</h2>
           </div>
-          {weatherData ? (
-            <>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-                <LocationCard weatherData={weatherData} searchQuery={searchQuery} />
-                <CurrentWeatherCard weatherData={weatherData} searchQuery={searchQuery} />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                <HourlyWeatherChart weatherData={weatherData} searchQuery={searchQuery} />
-                <WeeklyForecast weatherData={weatherData} searchQuery={searchQuery} />
-              </div>
-            </>
-          ) : (
-            !isLoading && <p className="text-center text-gray-400">No weather data available.</p>
-          )}
-        </div>
-      </div>
+        )}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mt-6 justify-items-center">
+    <LocationCard />
+    <CurrentWeatherCard />
+    <HourlyWeatherChart />
+    <WeeklyForecast />
+</div>
+
+
+</div>
+    </div>
   );
 }
 

@@ -7,16 +7,18 @@ import {
     Tooltip,
     Legend,
   } from 'chart.js';
-  import { Bar } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 import WeatherCardLayout from '../CardLayout';
 import { useSelector } from 'react-redux';
 import { units } from '../../utils/units';
-  
+  import useWeatherData from  '../../hooks/useWeatherData';
+
   ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
   
-  export default function HourlyWeatherChart({weatherData}) {
+  export default function HourlyWeatherChart() {
     const unitType=useSelector((store)=>store.units);
-    if (!weatherData || !weatherData.hourly) return <p>No hourly forecast data available.</p>;
+    const { weatherData,isLoading,error } = useWeatherData();
+    if (!weatherData || !weatherData.hourly||isLoading||error) return null;
     const hourlyData = weatherData.hourly.slice(0, 12).map(hour => {
       const { time } = hour.dt;
       return {
@@ -25,7 +27,6 @@ import { units } from '../../utils/units';
         condition: hour.weather[0].description,
       };
     });
-  
     const chartData = {
       labels: hourlyData.map(data => data.time),
       datasets: [
@@ -70,7 +71,6 @@ import { units } from '../../utils/units';
         },
       },
     };
-  
     return (
       <WeatherCardLayout>
  <h2 className="text-2xl font-bold mb-4 bg-gradient-to-r from-gradient-start to-gradient-end bg-clip-text text-transparent">
@@ -80,4 +80,3 @@ import { units } from '../../utils/units';
       </WeatherCardLayout>
     );
   }
-  

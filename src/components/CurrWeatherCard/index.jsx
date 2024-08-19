@@ -6,8 +6,11 @@ import getFormattedDateTime from '../../utils/getDate';
 import weatherIconMapping from '../../utils/weatherIconMap';
 import { units } from '../../utils/units';
 import { useSelector } from 'react-redux';
-function CurrentWeatherCard({ weatherData }) {
+import useWeatherData from '../../hooks/useWeatherData';
+function CurrentWeatherCard() {
   const unitsType=useSelector((store)=>store.units);
+ const {isLoading,error,weatherData}=useWeatherData();
+ if(!weatherData||!weatherData.current||isLoading||error)return  null;
   const { 
     temp: temperature, 
     feels_like: feelsLike, 
@@ -36,20 +39,20 @@ function CurrentWeatherCard({ weatherData }) {
         </div>
 
         <div className="text-4xl text-gradient-end">
-          <WeatherDetail icon={<WeatherIcon className="text-5xl" />} label={weather[0]?.main} />
+          <WeatherDetail icon={<WeatherIcon className="text-7xl" />} label={weather[0]?.main} />
         </div>
 
         <div className="flex flex-col items-end">
-          <WeatherDetail icon={<FiSunrise />} label="Sunrise" value={sunriseTime} />
-          <WeatherDetail icon={<FiSunset />} label="Sunset" value={sunsetTime} />
+          <WeatherDetail icon={<FiSunrise className='text-5xl'/>} label="Sunrise" value={sunriseTime} />
+          <WeatherDetail icon={<FiSunset className='text-5xl'/>} label="Sunset" value={sunsetTime} />
         </div>
       </div>
 
       <div className="flex flex-col md:flex-row justify-between mt-2 border-t border-gray-700">
-    <WeatherDetail icon={<WiHumidity />} label="Humidity" value={`${humidity}%`} />
-    <WeatherDetail icon={<WiStrongWind />} label="Wind" value={`${windSpeed + units[unitsType].windSpeed}`} />
-    <WeatherDetail icon={<WiBarometer />} label="Pressure" value={`${pressure + units[unitsType].pressure}`} />
-    <WeatherDetail icon={<WiDaySunny />} label="UV Index" value={uvIndex} />
+    <WeatherDetail icon={<WiHumidity className='text-5xl'/>} label="Humidity" value={`${humidity}%`} />
+    <WeatherDetail icon={<WiStrongWind className='text-5xl'/>} label="Wind" value={`${windSpeed + units[unitsType].windSpeed}`} />
+    <WeatherDetail icon={<WiBarometer className='text-5xl'/>} label="Pressure" value={`${pressure + units[unitsType].pressure}`} />
+    <WeatherDetail icon={<WiDaySunny className='text-5xl'/>} label="UV Index" value={uvIndex} />
 </div>
 
     </WeatherCardLayout>
